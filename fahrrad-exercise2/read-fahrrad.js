@@ -48,3 +48,4 @@ function displayBicycleCSVData() {
 
 // Funktion ausführen
 displayBicycleCSVData();
+//Hey, ich bin Edah :)
