@@ -1,0 +1,12 @@
+bike_id,color,bike_type,status,hourly_rate
+BK-101,Rot,Citybike,Frei,3.50
+BK-102,Blau,E-Bike,Reserviert,6.00
+BK-103,Schwarz,Mountainbike,Frei,5.00
+BK-104,Grün,Citybike,In Benutzung,3.50
+BK-105,Gelb,E-Bike,Frei,6.00
+BK-106,Silber,Trekkingbike,Wartung,4.50
+BK-107,Rot,E-Bike,Frei,6.00
+BK-108,Weiß,Citybike,Reserviert,3.50
+BK-109,Orange,Mountainbike,Frei,5.00
+BK-110,Schwarz,E-Bike,In Benutzung,6.00
+
