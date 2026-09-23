@@ -1,2 +1,3 @@
 # easybike-app
-Fahrrad App
+
+Das ist die App "EasyBike".
