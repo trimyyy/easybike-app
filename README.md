@@ -1,3 +1,3 @@
-# easybike-app
-
-Das ist die App "EasyBike".
+# easybike-app Docu
+Fahrrad App - in Zusammenarbeit von Hübner, Zekjiri, Muriqi
+# die js wurde mithilfe von Gemini erstellt
