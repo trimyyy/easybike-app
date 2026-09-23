@@ -48,3 +48,6 @@ function displayBicycleCSVData() {
 
 // Funktion ausführen
 displayBicycleCSVData();
+
+
+//Test Push Paul Hübner
