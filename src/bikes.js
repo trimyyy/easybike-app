@@ -3,7 +3,7 @@ const path = require('path');
 const { parseCsv } = require('./csv');
 
 const BIKES_FILE = path.join(__dirname, '..', 'data', 'bikes.csv');
-const REQUIRED_FIELDS = ['bike_id', 'color', 'bike_type', 'status', 'hourly_rate'];
+const REQUIRED_FIELDS = ['bike_id', 'brand', 'color', 'bike_type', 'status', 'hourly_rate'];
 
 // Prüft einen Datensatz aus der CSV-Datei und wandelt hourly_rate in eine Zahl um.
 // Zusätzliche Spalten bleiben unverändert erhalten.

@@ -38,10 +38,13 @@ Die erste Zeile enthält die Spaltennamen, jede weitere Zeile ist ein Fahrrad.
 | Spalte        | Beispiel | Bedeutung                                                   |
 | ------------- | -------- | ----------------------------------------------------------- |
 | `bike_id`     | `BK-101` | Eindeutige Nummer des Fahrrads                              |
+| `brand`       | `Cube`   | Marke                                                       |
 | `color`       | `Rot`    | Farbe                                                       |
 | `bike_type`   | `E-Bike` | Fahrradtyp                                                  |
 | `status`      | `Frei`   | Aktuell verwendet: Frei, Reserviert, In Benutzung, Wartung  |
 | `hourly_rate` | `6.00`   | Preis pro Stunde in Euro, mit Punkt als Dezimaltrennzeichen |
+
+Die Marken in `data/bikes.csv` sind Beispieldaten zum Testen.
 
 Regeln:
 
