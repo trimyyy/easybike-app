@@ -28,7 +28,7 @@ test('behält zusätzliche Spalten', () => {
 });
 
 test('versteht Windows-Zeilenenden und BOM am Dateianfang', () => {
-  const records = parseCsv('﻿bike_id,color\r\nBK-1,Rot\r\n');
+  const records = parseCsv('\uFEFFbike_id,color\r\nBK-1,Rot\r\n');
 
   assert.deepEqual(records, [{ bike_id: 'BK-1', color: 'Rot' }]);
 });

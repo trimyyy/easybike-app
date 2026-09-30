@@ -4,13 +4,11 @@
 //
 // Einschränkung: Werte dürfen keine Kommas oder Anführungszeichen enthalten.
 function parseCsv(text) {
-  // Excel speichert CSV-Dateien oft mit unsichtbarem BOM am Anfang
-  const content = text.replace(/^﻿/, '');
-  if (!content.trim()) {
+  if (!text.trim()) {
     throw new Error('CSV-Datei ist leer');
   }
 
-  const lines = content.split(/\r?\n/);
+  const lines = text.split(/\r?\n/);
   const headers = lines[0].split(',').map(h => h.trim());
   const records = [];
 
