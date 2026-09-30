@@ -58,6 +58,7 @@ npm test
 
 ```
 data/bikes.csv       Fahrradbestand
+data/bike_types.csv  Preis pro Fahrradtyp
 src/csv.js           parseCsv(): wandelt CSV-Text in Objekte um
 src/bikes.js         loadBikes(): liest und prüft die Fahrrad-Daten
 src/query.js         queryBikes(): filtert und sortiert (ohne Ein-/Ausgabe)
@@ -66,28 +67,39 @@ src/index.js         Einstiegspunkt: verbindet alles und gibt die Tabelle aus
 test/                Tests (node:test)
 ```
 
-## Datenformat `data/bikes.csv`
+## Datenformat
 
-Die erste Zeile enthält die Spaltennamen, jede weitere Zeile ist ein Fahrrad.
+Beide Dateien liegen in `data/`. Die erste Zeile enthält die Spaltennamen, jede weitere Zeile ist ein Datensatz.
+
+### `data/bikes.csv`: ein Fahrrad pro Zeile
+
+| Spalte      | Beispiel | Bedeutung                                            |
+| ----------- | -------- | ---------------------------------------------------- |
+| `bike_id`   | `BK-101` | Eindeutige Nummer des Fahrrads                       |
+| `brand`     | `Cube`   | Marke                                                |
+| `color`     | `Rot`    | Farbe                                                |
+| `bike_type` | `E-Bike` | Fahrradtyp, muss in `bike_types.csv` vorkommen       |
+| `status`    | `Frei`   | Nur erlaubt: Frei, Reserviert, In Benutzung, Wartung |
+
+Die Marken sind Beispieldaten zum Testen.
+
+### `data/bike_types.csv`: Preis pro Fahrradtyp
 
 | Spalte        | Beispiel | Bedeutung                                                   |
 | ------------- | -------- | ----------------------------------------------------------- |
-| `bike_id`     | `BK-101` | Eindeutige Nummer des Fahrrads                              |
-| `brand`       | `Cube`   | Marke                                                       |
-| `color`       | `Rot`    | Farbe                                                       |
 | `bike_type`   | `E-Bike` | Fahrradtyp                                                  |
-| `status`      | `Frei`   | Nur erlaubt: Frei, Reserviert, In Benutzung, Wartung        |
 | `hourly_rate` | `6.00`   | Preis pro Stunde in Euro, mit Punkt als Dezimaltrennzeichen |
 
-Die Marken in `data/bikes.csv` sind Beispieldaten zum Testen.
+Jedes Fahrrad kostet den Preis seines Typs. Eine Preisänderung für alle E-Bikes ist also eine Zeile in `bike_types.csv`.
 
 Regeln:
 
 - Trennzeichen ist das Komma. Beim Speichern aus Excel darauf achten, dass nicht Semikolon verwendet wird.
 - Werte dürfen keine Kommas oder Anführungszeichen enthalten.
-- Alle Spalten oben sind Pflicht. Zusätzliche Spalten sind erlaubt und werden mit ausgegeben.
-- Der Status muss genau so geschrieben sein wie oben (z. B. `Frei`, nicht `frei`).
-- Ist eine Zeile fehlerhaft, bricht das Programm mit einer Fehlermeldung ab, die die Zeile bzw. das Fahrrad nennt.
+- Alle Spalten oben sind Pflicht. In `bikes.csv` sind zusätzliche Spalten erlaubt und werden mit ausgegeben, eine Spalte `hourly_rate` aber nicht.
+- Status und Fahrradtyp müssen genau so geschrieben sein wie oben bzw. in `bike_types.csv` (z. B. `Frei`, nicht `frei`).
+- `bike_id` und `bike_type` dürfen in ihrer Datei nicht doppelt vorkommen.
+- Ist eine Zeile fehlerhaft, bricht das Programm mit einer Fehlermeldung ab, die Datei und Datensatz nennt.
 
 ## Hinweis
 
