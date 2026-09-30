@@ -1,50 +1,21 @@
-const fs = require('fs');
-const path = require('path');
+const { loadBikes } = require('./bikes');
 
-// Funktion zum Einlesen und Konvertieren der CSV-Datei in Objekte
-function displayBicycleCSVData() {
-  const filePath = path.join(__dirname, '..', 'data', 'bikes.csv');
+const euro = new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR' });
 
-  try {
-    // CSV-Datei zeilenweise einlesen
-    const fileContent = fs.readFileSync(filePath, 'utf8');
-    const lines = fileContent.trim().split('\n');
+// Gibt alle Fahrräder als Tabelle im Terminal aus
+function printBikes(bikes) {
+  console.log('=========================================');
+  console.log('    EASYBIKE Fahrradverleih Datensatz');
+  console.log('=========================================\n');
 
-    // Erste Zeile enthält die Spaltennamen (Header)
-    const headers = lines[0].split(',').map(h => h.trim());
+  console.table(bikes.map(bike => ({ ...bike, hourly_rate: euro.format(bike.hourly_rate) })));
 
-    console.log("=========================================");
-    console.log("    EASYBIKE Fahrradverleih Datensatz      ");
-    console.log("=========================================\n");
-
-    const bicycles = [];
-
-    // Zeilen ab Index 1 in Objekte umwandeln
-    for (let i = 1; i < lines.length; i++) {
-      if (!lines[i].trim()) continue; // Leere Zeilen überspringen
-
-      const values = lines[i].split(',').map(v => v.trim());
-      const bikeObject = {
-        [headers[0]]: values[0],
-        [headers[1]]: values[1],
-        [headers[2]]: values[2],
-        [headers[3]]: values[3],
-        [headers[4]]: parseFloat(values[4])
-      };
-
-      bicycles.push(bikeObject);
-
-      // Jeden Datensatz als einzelnes Objekt im Terminal ausgeben
-      console.log(`--- Datensatz #${i} ---`);
-      console.log(bikeObject);
-      console.log("");
-    }
-
-    console.log(`Gesamtanzahl eingelesener Fahrräder: ${bicycles.length}`);
-  } catch (error) {
-    console.error("Fehler beim Einlesen der CSV-Datei:", error.message);
-  }
+  console.log(`\nGesamtanzahl eingelesener Fahrräder: ${bikes.length}`);
 }
 
-// Funktion ausführen
-displayBicycleCSVData();
+try {
+  printBikes(loadBikes());
+} catch (error) {
+  console.error('Fehler beim Einlesen der Fahrrad-Daten:', error.message);
+  process.exitCode = 1;
+}
