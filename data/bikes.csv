@@ -1,0 +1,11 @@
+bike_id,brand,color,bike_type,status
+BK-101,Gazelle,Rot,Citybike,Frei
+BK-102,Riese & Müller,Blau,E-Bike,Reserviert
+BK-103,Cube,Schwarz,Mountainbike,Frei
+BK-104,Pegasus,Grün,Citybike,In Benutzung
+BK-105,Cube,Gelb,E-Bike,Frei
+BK-106,Kalkhoff,Silber,Trekkingbike,Wartung
+BK-107,Riese & Müller,Rot,E-Bike,Frei
+BK-108,Gazelle,Weiß,Citybike,Reserviert
+BK-109,Canyon,Orange,Mountainbike,Frei
+BK-110,Kalkhoff,Schwarz,E-Bike,In Benutzung
