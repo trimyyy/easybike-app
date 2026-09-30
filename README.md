@@ -30,7 +30,7 @@ node src/index.js --typ E-Bike --status Frei --sort preis
 | `--farbe <Farbe>`    | nur diese Farbe, z. B. `--farbe Rot`                        |
 | `--typ <Typ>`        | nur dieser Fahrradtyp, z. B. `--typ E-Bike`                 |
 | `--marke <Marke>`    | nur diese Marke, z. B. `--marke "Riese & Müller"`           |
-| `--status <Status>`  | nur dieser Status, z. B. `--status Frei`                    |
+| `--status <Status>`  | `Frei`, `Reserviert`, `In Benutzung` oder `Wartung`         |
 | `--preis-min <Euro>` | Mindestpreis pro Stunde, z. B. `4` oder `4,50`              |
 | `--preis-max <Euro>` | Höchstpreis pro Stunde                                      |
 | `--sort <Feld>`      | `id` (Standard), `marke`, `farbe`, `typ`, `status`, `preis` |
@@ -76,7 +76,7 @@ Die erste Zeile enthält die Spaltennamen, jede weitere Zeile ist ein Fahrrad.
 | `brand`       | `Cube`   | Marke                                                       |
 | `color`       | `Rot`    | Farbe                                                       |
 | `bike_type`   | `E-Bike` | Fahrradtyp                                                  |
-| `status`      | `Frei`   | Aktuell verwendet: Frei, Reserviert, In Benutzung, Wartung  |
+| `status`      | `Frei`   | Nur erlaubt: Frei, Reserviert, In Benutzung, Wartung        |
 | `hourly_rate` | `6.00`   | Preis pro Stunde in Euro, mit Punkt als Dezimaltrennzeichen |
 
 Die Marken in `data/bikes.csv` sind Beispieldaten zum Testen.
@@ -86,6 +86,7 @@ Regeln:
 - Trennzeichen ist das Komma. Beim Speichern aus Excel darauf achten, dass nicht Semikolon verwendet wird.
 - Werte dürfen keine Kommas oder Anführungszeichen enthalten.
 - Alle Spalten oben sind Pflicht. Zusätzliche Spalten sind erlaubt und werden mit ausgegeben.
+- Der Status muss genau so geschrieben sein wie oben (z. B. `Frei`, nicht `frei`).
 - Ist eine Zeile fehlerhaft, bricht das Programm mit einer Fehlermeldung ab, die die Zeile bzw. das Fahrrad nennt.
 
 ## Hinweis

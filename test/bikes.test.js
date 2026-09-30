@@ -39,6 +39,22 @@ test('meldet eine fehlende Spalte in der Kopfzeile', () => {
   );
 });
 
+test('akzeptiert nur die festen Status-Werte, genau so geschrieben', () => {
+  for (const status of ['Frei', 'Reserviert', 'In Benutzung', 'Wartung']) {
+    assert.equal(parseBikes(`${HEADER}\nBK-1,Cube,Rot,Citybike,${status},3.50`)[0].status, status);
+  }
+  for (const status of ['Frie', 'frei', 'Kaputt']) {
+    assert.throws(
+      () => parseBikes(`${HEADER}\nBK-1,Cube,Rot,Citybike,${status},3.50`),
+      {
+        message:
+          `Datensatz #1 (BK-1): Status "${status}" ist ungültig. ` +
+          'Erlaubt: Frei, Reserviert, In Benutzung, Wartung',
+      }
+    );
+  }
+});
+
 test('meldet einen leeren Preis, statt ihn als 0 zu lesen', () => {
   assert.throws(
     () => parseBikes(`${HEADER}\nBK-1,Cube,Rot,Citybike,Frei,`),

@@ -47,6 +47,13 @@ test('lehnt ungültige Preise ab', () => {
   assertUsageError(['--preis-min=-1'], /kein gültiger Preis/);
 });
 
+test('Status: feste Werte, Groß-/Kleinschreibung egal', () => {
+  const { filters } = parseCliArgs(['--status', 'frei', '--status', 'in benutzung']);
+  assert.deepEqual(filters, { status: ['frei', 'in benutzung'] });
+  assertUsageError(['--status', 'Frie'], /Unbekannter Status "Frie"\. Erlaubt: Frei, Reserviert/);
+  assertUsageError(['--status', 'Frei', '--status', 'Kaputt'], /Unbekannter Status "Kaputt"/);
+});
+
 test('Mindestpreis größer als Höchstpreis ist ein Fehler, gleich ist erlaubt', () => {
   assertUsageError(['--preis-min', '6,50', '--preis-max', '5'], /--preis-min \(6,5\) ist größer als --preis-max \(5\)/);
   const query = parseCliArgs(['--preis-min', '5', '--preis-max', '5,00']);

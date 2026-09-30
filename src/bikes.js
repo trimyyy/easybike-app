@@ -4,6 +4,8 @@ const { parseCsv } = require('./csv');
 
 const BIKES_FILE = path.join(__dirname, '..', 'data', 'bikes.csv');
 const REQUIRED_FIELDS = ['bike_id', 'brand', 'color', 'bike_type', 'status', 'hourly_rate'];
+// Erlaubte Status-Werte, genau so geschrieben wie in data/bikes.csv
+const STATUSES = ['Frei', 'Reserviert', 'In Benutzung', 'Wartung'];
 
 // Prüft einen Datensatz aus der CSV-Datei und wandelt hourly_rate in eine Zahl um.
 // Zusätzliche Spalten bleiben unverändert erhalten.
@@ -14,6 +16,12 @@ function toBike(record, index) {
     if (!record[field]) {
       throw new Error(`${label}: Feld "${field}" fehlt oder ist leer`);
     }
+  }
+
+  if (!STATUSES.includes(record.status)) {
+    throw new Error(
+      `${label}: Status "${record.status}" ist ungültig. Erlaubt: ${STATUSES.join(', ')}`
+    );
   }
 
   const hourlyRate = Number(record.hourly_rate);
@@ -32,4 +40,4 @@ function loadBikes(filePath = BIKES_FILE) {
   return parseBikes(fs.readFileSync(filePath, 'utf8'));
 }
 
-module.exports = { parseBikes, loadBikes };
+module.exports = { STATUSES, parseBikes, loadBikes };

@@ -62,6 +62,17 @@ test('Bedienfehler: Meldung auf stderr, Exit-Code 2, kein Stacktrace', () => {
   assert.match(result.stderr, /^Fehler: Unbekannte Option "--colour"\nHilfe: npm start -- --help\n$/);
 });
 
+test('Status mit festen Werten: Tippfehler ist ein Bedienfehler', () => {
+  const typo = run(['--status', 'Frie']);
+  assert.equal(typo.status, 2);
+  assert.match(typo.stderr, /Unbekannter Status "Frie"/);
+
+  const valid = run(['--status', 'wartung']);
+  assert.equal(valid.status, 0);
+  assert.equal(valid.stderr, '');
+  assert.deepEqual(idsIn(valid.stdout), ['BK-106']);
+});
+
 test('von npm abgefangene Option wird erkannt statt ungefiltert alles zu zeigen', () => {
   const result = run([], { npm_lifecycle_event: 'start', npm_config_farbe: 'Rot' });
   assert.equal(result.status, 2);

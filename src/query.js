@@ -84,4 +84,12 @@ function findUnknownValues(bikes, filters = {}) {
   return unknown;
 }
 
-module.exports = { FILTER_FIELDS, SORT_FIELDS, filterBikes, sortBikes, queryBikes, findUnknownValues };
+module.exports = {
+  FILTER_FIELDS,
+  SORT_FIELDS,
+  isSameText,
+  filterBikes,
+  sortBikes,
+  queryBikes,
+  findUnknownValues,
+};

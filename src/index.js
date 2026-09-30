@@ -44,7 +44,10 @@ function main(argv, env) {
     return;
   }
 
-  for (const { field, value, available } of findUnknownValues(bikes, query.filters)) {
+  // Status ist schon in parseCliArgs() gegen die festen Werte geprüft
+  const openFilters = { ...query.filters };
+  delete openFilters.status;
+  for (const { field, value, available } of findUnknownValues(bikes, openFilters)) {
     console.error(
       `Hinweis: ${FIELD_LABELS[field]} "${value}" gibt es im Bestand nicht. ` +
         `Vorhanden: ${available.join(', ')}`

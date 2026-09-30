@@ -1,4 +1,6 @@
 const { parseArgs } = require('node:util');
+const { STATUSES } = require('./bikes');
+const { isSameText } = require('./query');
 
 // Fehler in der Bedienung, z. B. unbekannte Option oder ungültiger Preis
 class UsageError extends Error {}
@@ -49,7 +51,7 @@ Filter:
   --farbe <Farbe>      z. B. --farbe Rot
   --typ <Typ>          z. B. --typ E-Bike
   --marke <Marke>      z. B. --marke "Riese & Müller"
-  --status <Status>    z. B. --status Frei
+  --status <Status>    Frei, Reserviert, "In Benutzung" oder Wartung
   --preis-min <Euro>   Mindestpreis pro Stunde, z. B. 4 oder 4,50
   --preis-max <Euro>   Höchstpreis pro Stunde
 
@@ -90,6 +92,13 @@ function parseCliArgs(argv) {
   for (const [option, field] of FILTER_OPTIONS) {
     if (values[option]) {
       filters[field] = values[option].map(value => value.trim());
+    }
+  }
+
+  // Status hat feste Werte, ein unbekannter Wert ist also ein Tippfehler
+  for (const status of filters.status ?? []) {
+    if (!STATUSES.some(allowed => isSameText(allowed, status))) {
+      throw new UsageError(`Unbekannter Status "${status}". Erlaubt: ${STATUSES.join(', ')}`);
     }
   }
 
