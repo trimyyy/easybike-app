@@ -3,7 +3,7 @@ const path = require('path');
 
 // Funktion zum Einlesen und Konvertieren der CSV-Datei in Objekte
 function displayBicycleCSVData() {
-  const filePath = path.join(__dirname, 'fahrrad.csv');
+  const filePath = path.join(__dirname, '..', 'data', 'bikes.csv');
 
   try {
     // CSV-Datei zeilenweise einlesen
