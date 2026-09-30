@@ -14,7 +14,7 @@ function displayBicycleCSVData() {
     const headers = lines[0].split(',').map(h => h.trim());
 
     console.log("=========================================");
-    console.log("    EASYBIKE Fahrradverlei Datensatz      ");
+    console.log("    EASYBIKE Fahrradverleih Datensatz      ");
     console.log("=========================================\n");
 
     const bicycles = [];
@@ -48,7 +48,3 @@ function displayBicycleCSVData() {
 
 // Funktion ausführen
 displayBicycleCSVData();
-//Hey, ich bin Edah :)
-
-
-//Test Push Paul Hübner
