@@ -101,6 +101,7 @@ Regeln:
 - `bike_id` und `bike_type` dürfen in ihrer Datei nicht doppelt vorkommen.
 - Ist eine Zeile fehlerhaft, bricht das Programm mit einer Fehlermeldung ab, die Datei und Datensatz nennt.
 
-## Hinweis
+## Hinweis zu KI-Werkzeugen
 
-Die erste Version des Einlese-Skripts wurde mithilfe von Gemini erstellt.
+- Die erste Version des Einlese-Skripts wurde mithilfe von Gemini erstellt.
+- Die Aufteilung in `src/` und `test/`, die Tests, das Filtern und Sortieren, die festen Status-Werte und die Preise pro Fahrradtyp wurden mithilfe von Claude (Anthropic) erstellt. Die betroffenen Commits sind mit `Co-Authored-By: Claude` gekennzeichnet.
