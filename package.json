@@ -1,10 +1,11 @@
 {
   "name": "easybike-app",
   "version": "0.1.0",
-  "description": "Fahrradverleih-App: liest den Fahrradbestand aus einer CSV-Datei",
+  "description": "Fahrradverleih-App: liest den Fahrradbestand aus CSV-Dateien, filtert und sortiert ihn im Terminal oder in der Weboberfläche",
   "private": true,
   "scripts": {
     "start": "node src/index.js",
+    "web": "node src/server.js",
     "test": "node --test"
   },
   "engines": {
