@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Fahrrad mieten in Wien – EasyBike Vienna</title>
+  <meta name="description" content="Fahrräder am Max-Musterplatz 1 in Wien finden, filtern, sortieren und reservieren.">
+  <meta name="color-scheme" content="light dark">
+  <link rel="icon" href="/img/favicon.svg" type="image/svg+xml">
+  <link rel="preload" href="/fonts/PlusJakartaSans.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="/css/style.css">
+  <script type="module" src="/js/customer.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#results">Zu den Fahrrädern springen</a>
+
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="brand" href="/" aria-label="EasyBike Vienna, Startseite">
+        <span class="brand-mark"><svg data-icon="bike" data-size="20"></svg></span>
+        <span class="brand-name">EasyBike <span>Vienna</span></span>
+      </a>
+      <nav class="main-nav" aria-label="Hauptnavigation">
+        <a href="/" aria-current="page">Fahrräder</a>
+        <a href="#so-gehts">So funktioniert's</a>
+        <a href="#gut-zu-wissen">Gut zu wissen</a>
+      </nav>
+      <div class="header-end">
+        <span class="open-status" id="open-status">Täglich 08:00–18:00</span>
+        <a class="header-link is-quiet" href="/admin">Verwaltung</a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="container intro" aria-labelledby="page-title">
+      <h1 id="page-title">Fahrrad mieten in Wien</h1>
+      <p class="intro-meta">
+        <span><svg data-icon="map-pin" data-size="18"></svg>Max-Musterplatz 1, 1000 Wien</span>
+        <span><svg data-icon="clock" data-size="18"></svg>Täglich 08:00–18:00</span>
+        <span><svg data-icon="store" data-size="18"></svg>Abholung und Rückgabe an einer Station</span>
+      </p>
+      <div class="type-chips" id="type-chips" role="group" aria-label="Schnellauswahl Fahrradtyp mit Preis pro Stunde"></div>
+    </section>
+
+    <div class="container shop">
+      <aside class="filter-aside" id="filter-aside" aria-label="Filter"></aside>
+
+      <section class="results" id="results" aria-labelledby="results-title" tabindex="-1">
+        <h2 id="results-title" class="visually-hidden">Fahrräder</h2>
+
+        <div class="results-bar">
+          <button type="button" class="btn btn-secondary filter-toggle" id="filter-open" aria-haspopup="dialog">
+            <svg data-icon="filter" data-size="18"></svg>Filter<span class="count-pill" id="filter-count" hidden></span>
+          </button>
+          <p class="result-count" id="result-count" role="status" aria-live="polite">Fahrräder werden geladen …</p>
+          <div class="sort-control">
+            <label for="sort-select">Sortieren nach</label>
+            <span class="select-wrap">
+              <select class="select" id="sort-select"></select>
+              <svg data-icon="chevron-down" data-size="18"></svg>
+            </span>
+          </div>
+          <p class="sort-note">Bei gleichem Wert entscheidet die Nr.</p>
+        </div>
+
+        <div class="active-filters" id="active-filters" role="group" aria-label="Aktive Filter"></div>
+        <div id="notices"></div>
+
+        <div class="bike-grid" id="bike-grid" aria-busy="true">
+          <div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div>
+        </div>
+        <div class="empty-state" id="empty-state" hidden></div>
+
+        <details class="proof" id="proof">
+          <summary><svg data-icon="terminal" data-size="18"></svg>Nachprüfen: dasselbe Ergebnis in der Kommandozeile<svg data-icon="chevron-down" data-size="18"></svg></summary>
+          <div class="proof-body">
+            <p>Die Website filtert und sortiert nicht selbst. Sie fragt den Server, und der ruft dieselbe Funktion <code>queryBikes()</code> auf wie die Kommandozeile. Dabei gilt:</p>
+            <ul class="proof-rules">
+              <li>Mehrere Häkchen in einer Gruppe bedeuten „oder“, verschiedene Gruppen bedeuten „und“.</li>
+              <li>Preisgrenzen zählen mit: max. 5 findet auch Räder für genau 5,00 €.</li>
+              <li>Bei gleichem Wert entscheidet die Nr. über die Reihenfolge.</li>
+            </ul>
+            <p>Dieser Befehl liefert deshalb genau dieselben Fahrräder in derselben Reihenfolge:</p>
+            <div class="code-row"><code id="proof-cli">npm start</code><button type="button" class="btn btn-ghost btn-sm" id="proof-copy">Kopieren</button></div>
+            <p><a id="proof-json" href="/api/bikes">Rohdaten dieser Ansicht als JSON öffnen</a></p>
+          </div>
+        </details>
+      </section>
+    </div>
+
+    <section class="container section" id="so-gehts" aria-labelledby="how-title">
+      <h2 id="how-title">So funktioniert's</h2>
+      <ol class="steps">
+        <li class="step">
+          <span class="step-num">1</span>
+          <h3>Fahrrad finden</h3>
+          <p>Filtere nach Typ, Preis, Verfügbarkeit, Marke und Farbe und sortiere die Liste so, wie es für dich passt.</p>
+        </li>
+        <li class="step">
+          <span class="step-num">2</span>
+          <h3>Zeitraum wählen</h3>
+          <p>Wähle bei einem freien Rad Datum, Uhrzeit und Dauer. Der Preis wird direkt aus dem Stundensatz berechnet.</p>
+        </li>
+        <li class="step">
+          <span class="step-num">3</span>
+          <h3>Abholen und losfahren</h3>
+          <p>Hol das Rad an der Station ab und bring es bis 18:00 Uhr wieder dorthin zurück.</p>
+        </li>
+      </ol>
+    </section>
+
+    <section class="container section" id="gut-zu-wissen" aria-labelledby="facts-title">
+      <h2 id="facts-title">Gut zu wissen</h2>
+      <ul class="facts">
+        <li class="fact">
+          <span class="fact-icon"><svg data-icon="clock"></svg></span>
+          <div><h3>Letzter Start um 17:30</h3><p>Die Rückgabe ist bis 18:00 Uhr möglich.</p></div>
+        </li>
+        <li class="fact">
+          <span class="fact-icon"><svg data-icon="euro"></svg></span>
+          <div><h3>50 € Kaution</h3><p>Vor Ort bei der Abholung, bei der Rückgabe bekommst du sie zurück.</p></div>
+        </li>
+        <li class="fact">
+          <span class="fact-icon"><svg data-icon="timer"></svg></span>
+          <div><h3>60 Minuten Abholfrist</h3><p>Wird das Rad nicht rechtzeitig abgeholt, verfällt die Reservierung.</p></div>
+        </li>
+      </ul>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <p><strong>EasyBike Vienna</strong> · Max-Musterplatz 1, 1000 Wien · täglich 08:00–18:00</p>
+      <div class="footer-links">
+        <span>Schulprojekt von Hübner, Zekjiri und Muriqi</span>
+        <a href="/admin">Verwaltung</a>
+      </div>
+    </div>
+  </footer>
+
+  <dialog class="sheet sheet-left filter-sheet" id="filter-sheet" aria-labelledby="filter-sheet-title">
+    <div class="sheet-head">
+      <h2 id="filter-sheet-title">Filter</h2>
+      <button type="button" class="icon-btn" id="filter-close" aria-label="Filter schließen"><svg data-icon="x"></svg></button>
+    </div>
+    <div class="sheet-body" id="filter-sheet-body"></div>
+    <div class="sheet-foot">
+      <button type="button" class="btn btn-secondary" id="filter-sheet-reset">Zurücksetzen</button>
+      <button type="button" class="btn btn-primary" id="filter-sheet-apply">Fahrräder anzeigen</button>
+    </div>
+  </dialog>
+
+  <dialog class="sheet" id="booking" aria-labelledby="booking-title">
+    <form class="sheet-form" id="booking-form" novalidate>
+      <div class="sheet-head">
+        <h2 id="booking-title">Reservieren <span class="demo-tag">Demo</span></h2>
+        <button type="button" class="icon-btn" data-close-booking aria-label="Reservierung schließen"><svg data-icon="x"></svg></button>
+      </div>
+      <div class="sheet-body">
+        <div class="booking-bike" id="booking-bike"></div>
+        <div class="form-grid">
+          <div class="span-2">
+            <label class="field-label" for="booking-date">Datum</label>
+            <input class="input" type="date" id="booking-date" required>
+          </div>
+          <div>
+            <label class="field-label" for="booking-start">Abholung um</label>
+            <span class="select-wrap">
+              <select class="select" id="booking-start"></select>
+              <svg data-icon="chevron-down" data-size="18"></svg>
+            </span>
+          </div>
+          <div>
+            <label class="field-label" for="booking-hours">Dauer</label>
+            <span class="select-wrap">
+              <select class="select" id="booking-hours"></select>
+              <svg data-icon="chevron-down" data-size="18"></svg>
+            </span>
+          </div>
+        </div>
+        <p class="field-error" id="booking-error" role="alert" hidden></p>
+        <div class="price-summary" aria-live="polite">
+          <div class="price-line"><span>Zeitraum</span><span id="booking-range">–</span></div>
+          <div class="price-line"><span>Berechnung</span><span id="booking-calc">–</span></div>
+          <div class="price-total"><span>Mietpreis</span><strong id="booking-total">–</strong></div>
+        </div>
+        <p class="booking-note"><svg data-icon="info" data-size="18"></svg><span>Abholung und Rückgabe am Max-Musterplatz 1. Die Kaution von 50 € zahlst du vor Ort. Bitte hol das Rad innerhalb von 60 Minuten nach Beginn ab.</span></p>
+      </div>
+      <div class="sheet-foot">
+        <button type="button" class="btn btn-secondary" data-close-booking>Abbrechen</button>
+        <button type="submit" class="btn btn-primary">Reservierung bestätigen</button>
+      </div>
+    </form>
+    <div class="sheet-form" id="booking-done" hidden>
+      <div class="sheet-head">
+        <h2>Reservieren <span class="demo-tag">Demo</span></h2>
+        <button type="button" class="icon-btn" data-close-booking aria-label="Schließen"><svg data-icon="x"></svg></button>
+      </div>
+      <div class="sheet-body booking-done">
+        <span class="done-icon"><svg data-icon="check" data-size="30"></svg></span>
+        <h3 id="booking-done-title" tabindex="-1">Reservierung vorgemerkt</h3>
+        <p>Das ist eine Demo: Es wird nichts gespeichert, und das Rad bleibt in der Liste frei.</p>
+        <dl class="done-summary" id="booking-summary"></dl>
+      </div>
+      <div class="sheet-foot">
+        <button type="button" class="btn btn-primary" data-close-booking>Fertig</button>
+      </div>
+    </div>
+  </dialog>
+</body>
+</html>

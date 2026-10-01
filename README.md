@@ -1,22 +1,57 @@
-# EasyBike App
+# EasyBike Vienna
 
 Fahrradverleih-App – in Zusammenarbeit von Hübner, Zekjiri, Muriqi.
 
-Aktuell liest die App den Fahrradbestand aus `data/bikes.csv` ein und zeigt ihn als Tabelle im Terminal an.
-Die Fahrräder lassen sich nach Farbe, Typ, Marke, Status und Preis filtern und sortieren.
+Die App liest den Fahrradbestand aus `data/bikes.csv` ein. Die Fahrräder lassen sich nach Farbe, Typ, Marke, Status und Preis filtern und sortieren, wahlweise auf der Website oder in der Kommandozeile. Beide benutzen dieselbe Funktion `queryBikes()` aus `src/query.js`.
 
 ## Voraussetzungen
 
 - [Node.js](https://nodejs.org/) 22 oder neuer (prüfen mit `node --version`)
 - Keine weiteren Abhängigkeiten, `npm install` ist nicht nötig
 
-## Starten
+## Website starten
+
+```bash
+npm run web
+```
+
+Danach im Browser öffnen:
+
+- Kundenansicht: <http://localhost:3000>
+- Verwaltung: <http://localhost:3000/admin>
+- Algorithmus direkt als JSON: <http://localhost:3000/api/bikes?typ=E-Bike&sort=preis>
+
+Beenden mit `Strg+C` im Terminal. Ist Port 3000 belegt, einen anderen wählen: in PowerShell `$env:PORT=3001; npm run web`. Meldet PowerShell, dass `npm.ps1` nicht geladen werden kann, stattdessen `npm.cmd run web` oder `node src/server.js` verwenden. Der Server ist nur auf diesem Rechner erreichbar (127.0.0.1).
+
+### Was die Website kann
+
+- **Kundenansicht:** alle Fahrräder als Karten, links die Filter (Typ, Preis pro Stunde, Verfügbarkeit, Marke, Farbe) mit der Anzahl passender Räder pro Option, oben die Sortierung (alle 6 Felder, auf- und absteigend). Aktive Filter stehen als Chips über der Liste. Freie Räder lassen sich reservieren: Das ist eine **Demo**, der Preis wird berechnet, aber nichts gespeichert.
+- **Verwaltung:** Kennzahlen pro Status (anklickbar als Filter), dieselben Filter und eine Tabelle, die man über die Spaltenköpfe sortiert.
+- **Nachweis:** Unter „So prüft ihr das Ergebnis“ steht der CLI-Befehl, der genau dieselben Räder in derselben Reihenfolge liefert, und ein Link auf die Rohdaten als JSON.
+- Der Filterzustand steht in der Adresszeile (z. B. `/?farbe=Rot&farbe=Blau&sort=preis`). Jede Ansicht lässt sich also als Link speichern, und der Zurück-Button funktioniert.
+
+### API
+
+Die Parameter heißen wie die Optionen der Kommandozeile:
+
+| Parameter                         | Beispiel                     |
+| --------------------------------- | ---------------------------- |
+| `farbe`, `typ`, `marke`, `status` | mehrfach möglich (= „oder“)  |
+| `preis-min`, `preis-max`          | `4`, `4.5` oder `4,50`       |
+| `sort`                            | `id`, `marke`, `farbe`, `typ`, `status`, `preis` |
+| `absteigend`                      | `1` oder `true`              |
+
+- `GET /api/bikes?...` liefert die gefilterten und sortierten Räder (`bikes`), dazu `count`, `total`, den passenden CLI-Befehl (`cli`), Hinweise auf unbekannte Werte (`hints`) und die Anzahl pro Filteroption (`facets`).
+- `GET /api/options` liefert alle vorhandenen Werte mit Anzahl, die Preisspanne und die Sortierfelder.
+- Fehler kommen als `{ "error": { "code", "message", "param" } }`: `400` bei falscher Eingabe (wie Exit-Code 2 der CLI), `500` bei fehlerhaften Daten (wie Exit-Code 1).
+
+## Kommandozeile
 
 ```bash
 npm start
 ```
 
-## Filtern und Sortieren
+## Filtern und Sortieren in der Kommandozeile
 
 Optionen stehen bei `npm start` hinter `--`. Alternativ das Programm direkt mit `node` starten:
 
@@ -62,9 +97,13 @@ data/bike_types.csv  Preis pro Fahrradtyp
 src/csv.js           parseCsv(): wandelt CSV-Text in Objekte um
 src/bikes.js         loadBikes(): liest und prüft die Fahrrad-Daten
 src/query.js         queryBikes(): filtert und sortiert (ohne Ein-/Ausgabe)
-src/cli.js           parseCliArgs(): liest und prüft die Kommandozeilen-Optionen
-src/index.js         Einstiegspunkt: verbindet alles und gibt die Tabelle aus
-test/                Tests (node:test)
+src/search.js        buildQuery(): gemeinsame Prüfung der Eingaben für Kommandozeile und Website
+src/cli.js           parseCliArgs(): liest die Kommandozeilen-Optionen
+src/index.js         Einstiegspunkt Kommandozeile: gibt die Tabelle aus
+src/web.js           parseWebParams(): liest die URL-Parameter, zählt Treffer pro Filteroption
+src/server.js        Einstiegspunkt Website: kleiner Webserver mit JSON-API
+public/              Website (HTML, CSS, JavaScript, Schrift, Grafiken)
+test/                Tests (node:test), u. a. Vergleich Kommandozeile gegen API
 ```
 
 ## Datenformat
@@ -105,3 +144,9 @@ Regeln:
 
 - Die erste Version des Einlese-Skripts wurde mithilfe von Gemini erstellt.
 - Die Aufteilung in `src/` und `test/`, die Tests, das Filtern und Sortieren, die festen Status-Werte und die Preise pro Fahrradtyp wurden mithilfe von Claude (Anthropic) erstellt. Die betroffenen Commits sind mit `Co-Authored-By: Claude` gekennzeichnet.
+- Die ersten Entwürfe der Website entstanden mit Google Stitch. Die Website selbst (Aufbau nach einer Recherche echter Verleih-Seiten, Server, Oberfläche, Grafiken und Tests) wurde mithilfe von Claude erstellt.
+
+## Lizenzen
+
+- Schrift [Plus Jakarta Sans](https://github.com/tokotype/PlusJakartaSans): SIL Open Font License 1.1, siehe `public/fonts/OFL.txt`
+- Icons in `public/js/art.js`: nachgezeichnet nach [Lucide](https://lucide.dev) (ISC-Lizenz), die Fahrrad-Illustrationen sind eigene Zeichnungen

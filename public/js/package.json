@@ -1,0 +1,5 @@
+{
+  "type": "module",
+  "private": true,
+  "description": "Browser-Module der Website. Die Angabe type=module erlaubt es den Tests, sie in Node zu laden."
+}

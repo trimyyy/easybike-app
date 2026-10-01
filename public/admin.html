@@ -1,0 +1,122 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Flotte – EasyBike Vienna Verwaltung</title>
+  <meta name="description" content="Flottenübersicht der Station Max-Musterplatz 1: Fahrräder filtern und sortieren.">
+  <meta name="color-scheme" content="light dark">
+  <link rel="icon" href="/img/favicon.svg" type="image/svg+xml">
+  <link rel="preload" href="/fonts/PlusJakartaSans.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="/css/style.css">
+  <script type="module" src="/js/admin.js"></script>
+</head>
+<body class="page-admin">
+  <a class="skip-link" href="#results">Zur Tabelle springen</a>
+
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="brand" href="/admin" aria-label="EasyBike Vienna Verwaltung, Flotte">
+        <span class="brand-mark"><svg data-icon="bike" data-size="20"></svg></span>
+        <span class="brand-name">EasyBike <span>Vienna</span></span>
+        <span class="brand-context">Verwaltung</span>
+      </a>
+      <div class="header-end">
+        <a class="header-link" href="/" aria-label="Zur Kundenansicht"><span>Zur Kundenansicht</span><svg data-icon="arrow-right" data-size="18"></svg></a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <div class="container page-head">
+      <div>
+        <h1>Flotte</h1>
+        <p id="fleet-meta">Station Max-Musterplatz 1, 1000 Wien</p>
+      </div>
+    </div>
+
+    <section class="container" aria-labelledby="kpi-title">
+      <h2 id="kpi-title" class="visually-hidden">Status der Flotte</h2>
+      <div class="kpis" id="kpis" role="group" aria-label="Nach Status filtern" aria-describedby="kpi-hint"></div>
+      <p class="kpi-hint" id="kpi-hint">Kachel anklicken, um nach diesem Status zu filtern. Mehrere Kacheln bedeuten „oder“.</p>
+    </section>
+
+    <div class="container shop">
+      <aside class="filter-aside" id="filter-aside" aria-label="Filter"></aside>
+
+      <section class="results" id="results" aria-labelledby="results-title" tabindex="-1">
+        <h2 id="results-title" class="visually-hidden">Fahrräder</h2>
+
+        <div class="results-bar">
+          <button type="button" class="btn btn-secondary filter-toggle" id="filter-open" aria-haspopup="dialog">
+            <svg data-icon="filter" data-size="18"></svg>Filter<span class="count-pill" id="filter-count" hidden></span>
+          </button>
+          <p class="result-count" id="result-count" role="status" aria-live="polite">Fahrräder werden geladen …</p>
+          <div class="sort-control">
+            <label for="sort-select">Sortieren nach</label>
+            <span class="select-wrap">
+              <select class="select" id="sort-select"></select>
+              <svg data-icon="chevron-down" data-size="18"></svg>
+            </span>
+          </div>
+        </div>
+
+        <div class="active-filters" id="active-filters" role="group" aria-label="Aktive Filter"></div>
+        <div id="notices"></div>
+
+        <div class="table-card" id="table-card">
+          <table class="data-table" id="fleet-table">
+            <caption>Fahrräder<span>Spaltenkopf anklicken zum Sortieren, nochmal klicken dreht die Richtung um. Bei gleichem Wert entscheidet die Nr.</span></caption>
+            <thead><tr id="fleet-head"></tr></thead>
+            <tbody id="fleet-body"></tbody>
+          </table>
+        </div>
+        <ul class="fleet-list" id="fleet-list" aria-label="Fahrräder"></ul>
+        <div class="empty-state" id="empty-state" hidden></div>
+        <p class="visually-hidden" id="sort-announce" aria-live="polite"></p>
+
+        <div class="side-cards">
+          <section class="mini-card" aria-labelledby="prices-title">
+            <h2 id="prices-title">Preise pro Typ</h2>
+            <p>Jedes Rad kostet den Stundensatz seines Typs (data/bike_types.csv).</p>
+            <table class="mini-table">
+              <thead><tr><th scope="col">Typ</th><th scope="col" class="is-num">Preis pro Stunde</th><th scope="col" class="is-num">Räder</th></tr></thead>
+              <tbody id="price-table"></tbody>
+            </table>
+          </section>
+          <details class="proof mini-card" id="proof">
+            <summary><svg data-icon="terminal" data-size="18"></svg>Nachprüfen in der Kommandozeile<svg data-icon="chevron-down" data-size="18"></svg></summary>
+            <div class="proof-body">
+              <p>Die Tabelle kommt direkt aus <code>queryBikes()</code>, wie in der Kommandozeile. Dieser Befehl liefert dieselben Fahrräder in derselben Reihenfolge:</p>
+              <div class="code-row"><code id="proof-cli">npm start</code><button type="button" class="btn btn-ghost btn-sm" id="proof-copy">Kopieren</button></div>
+              <p><a id="proof-json" href="/api/bikes">Rohdaten dieser Ansicht als JSON öffnen</a></p>
+            </div>
+          </details>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <p><strong>EasyBike Vienna</strong> · Verwaltung · Daten aus data/bikes.csv und data/bike_types.csv</p>
+      <div class="footer-links">
+        <span>Schulprojekt von Hübner, Zekjiri und Muriqi</span>
+        <a href="/">Kundenansicht</a>
+      </div>
+    </div>
+  </footer>
+
+  <dialog class="sheet sheet-left filter-sheet" id="filter-sheet" aria-labelledby="filter-sheet-title">
+    <div class="sheet-head">
+      <h2 id="filter-sheet-title">Filter</h2>
+      <button type="button" class="icon-btn" id="filter-close" aria-label="Filter schließen"><svg data-icon="x"></svg></button>
+    </div>
+    <div class="sheet-body" id="filter-sheet-body"></div>
+    <div class="sheet-foot">
+      <button type="button" class="btn btn-secondary" id="filter-sheet-reset">Zurücksetzen</button>
+      <button type="button" class="btn btn-primary" id="filter-sheet-apply">Fahrräder anzeigen</button>
+    </div>
+  </dialog>
+</body>
+</html>

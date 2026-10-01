@@ -1,9 +1,5 @@
 const { parseArgs } = require('node:util');
-const { STATUSES } = require('./bikes');
-const { isSameText } = require('./query');
-
-// Fehler in der Bedienung, z. B. unbekannte Option oder ungültiger Preis
-class UsageError extends Error {}
+const { UsageError, SORT_OPTIONS, FIELD_LABELS, buildQuery } = require('./search');
 
 // Alle Werte mit multiple: true, damit doppelte Angaben wie
 // "--sort preis --sort marke" erkannt werden, statt still die letzte zu nehmen
@@ -17,31 +13,6 @@ const OPTIONS = {
   sort: { type: 'string', multiple: true },
   absteigend: { type: 'boolean' },
   help: { type: 'boolean', short: 'h' },
-};
-
-// Name auf der Kommandozeile -> Feld in den Daten
-const FILTER_OPTIONS = new Map([
-  ['farbe', 'color'],
-  ['typ', 'bike_type'],
-  ['marke', 'brand'],
-  ['status', 'status'],
-]);
-const SORT_OPTIONS = new Map([
-  ['id', 'bike_id'],
-  ['marke', 'brand'],
-  ['farbe', 'color'],
-  ['typ', 'bike_type'],
-  ['status', 'status'],
-  ['preis', 'hourly_rate'],
-]);
-
-const FIELD_LABELS = {
-  bike_id: 'ID',
-  brand: 'Marke',
-  color: 'Farbe',
-  bike_type: 'Typ',
-  status: 'Status',
-  hourly_rate: 'Preis',
 };
 
 const HELP_TEXT = `Verwendung: npm start -- [Optionen]
@@ -73,6 +44,7 @@ Beispiele:
   npm start -- --sort marke --absteigend`;
 
 // Wandelt die Kommandozeilen-Argumente in eine Abfrage für queryBikes() um.
+// Die eigentliche Prüfung steckt in buildQuery(), die auch die Web-Schnittstelle nutzt.
 // Wirft einen UsageError, wenn etwas nicht stimmt.
 function parseCliArgs(argv) {
   const { values, tokens } = parseArgs({
@@ -88,44 +60,7 @@ function parseCliArgs(argv) {
     return { help: true };
   }
 
-  const filters = {};
-  for (const [option, field] of FILTER_OPTIONS) {
-    if (values[option]) {
-      filters[field] = values[option].map(value => value.trim());
-    }
-  }
-
-  // Status hat feste Werte, ein unbekannter Wert ist also ein Tippfehler
-  for (const status of filters.status ?? []) {
-    if (!STATUSES.some(allowed => isSameText(allowed, status))) {
-      throw new UsageError(`Unbekannter Status "${status}". Erlaubt: ${STATUSES.join(', ')}`);
-    }
-  }
-
-  const minPrice = parsePrice(singleValue(values, 'preis-min'), '--preis-min');
-  const maxPrice = parsePrice(singleValue(values, 'preis-max'), '--preis-max');
-  if (minPrice !== undefined && maxPrice !== undefined && minPrice > maxPrice) {
-    throw new UsageError(
-      `--preis-min (${minPrice.toLocaleString('de-DE')}) ist größer als ` +
-        `--preis-max (${maxPrice.toLocaleString('de-DE')})`
-    );
-  }
-
-  const sortName = singleValue(values, 'sort') ?? 'id';
-  const sortField = SORT_OPTIONS.get(sortName.trim().toLowerCase());
-  if (!sortField) {
-    throw new UsageError(
-      `Unbekanntes Sortierfeld "${sortName}". Erlaubt: ${[...SORT_OPTIONS.keys()].join(', ')}`
-    );
-  }
-
-  return {
-    help: false,
-    filters,
-    minPrice,
-    maxPrice,
-    sort: { field: sortField, descending: values.absteigend === true },
-  };
+  return { help: false, ...buildQuery(values) };
 }
 
 // Eigene Prüfung statt parseArgs' strict-Modus, damit die Meldungen deutsch sind
@@ -137,44 +72,26 @@ function checkTokens(tokens) {
     if (token.kind !== 'option') continue;
 
     if (!Object.hasOwn(OPTIONS, token.name)) {
-      throw new UsageError(`Unbekannte Option "${token.rawName}"`);
+      throw new UsageError(`Unbekannte Option "${token.rawName}"`, token.name);
     }
 
     const expectsValue = OPTIONS[token.name].type === 'string';
     if (expectsValue) {
       if (typeof token.value !== 'string' || !token.value.trim()) {
-        throw new UsageError(`Option "${token.rawName}" braucht einen Wert`);
+        throw new UsageError(`Option "${token.rawName}" braucht einen Wert`, token.name);
       }
       // "--farbe --sort preis": hier wurde die nächste Option als Wert gelesen
       if (!token.inlineValue && token.value.startsWith('-')) {
         const hint = token.name === 'sort' ? ' (absteigend: --sort preis --absteigend)' : '';
         throw new UsageError(
-          `Option "${token.rawName}" braucht einen Wert, bekam aber "${token.value}"${hint}`
+          `Option "${token.rawName}" braucht einen Wert, bekam aber "${token.value}"${hint}`,
+          token.name
         );
       }
     } else if (token.value !== undefined) {
-      throw new UsageError(`Option "${token.rawName}" erwartet keinen Wert`);
+      throw new UsageError(`Option "${token.rawName}" erwartet keinen Wert`, token.name);
     }
   }
-}
-
-function singleValue(values, option) {
-  const given = values[option];
-  if (given === undefined) return undefined;
-  if (given.length > 1) {
-    throw new UsageError(`Option "--${option}" darf nur einmal angegeben werden`);
-  }
-  return given[0];
-}
-
-// Akzeptiert 4, 4.5 und 4,50. Keine negativen Zahlen, kein "1e3" oder "0x10".
-function parsePrice(text, option) {
-  if (text === undefined) return undefined;
-  const trimmed = text.trim();
-  if (!/^\d+([.,]\d+)?$/.test(trimmed)) {
-    throw new UsageError(`${option}: "${text}" ist kein gültiger Preis (Beispiel: 4.50 oder 4,50)`);
-  }
-  return Number(trimmed.replace(',', '.'));
 }
 
 // Startet man "npm start --farbe Rot" ohne "--", fängt npm die Option ab und
