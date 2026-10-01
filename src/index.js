@@ -1,5 +1,5 @@
 const { loadBikes } = require('./bikes');
-const { queryBikes, findUnknownValues } = require('./query');
+const { searchBikes, describeFilters, describeSort } = require('./search');
 const {
   UsageError,
   FIELD_LABELS,
@@ -44,17 +44,13 @@ function main(argv, env) {
     return;
   }
 
-  // Status ist schon in parseCliArgs() gegen die festen Werte geprüft
-  const openFilters = { ...query.filters };
-  delete openFilters.status;
-  for (const { field, value, available } of findUnknownValues(bikes, openFilters)) {
-    console.error(
-      `Hinweis: ${FIELD_LABELS[field]} "${value}" gibt es im Bestand nicht. ` +
-        `Vorhanden: ${available.join(', ')}`
-    );
+  // Dieselbe Suche wie in der Web-Schnittstelle (src/server.js)
+  const result = searchBikes(bikes, query);
+  for (const hint of result.hints) {
+    console.error(`Hinweis: ${hint.message}`);
   }
 
-  printBikes(queryBikes(bikes, query), bikes.length, query);
+  printBikes(result.bikes, result.total, query);
 }
 
 function reportUsageError(message) {
@@ -90,19 +86,6 @@ function toTableRow(bike) {
     row[label] = field === 'hourly_rate' ? euro.format(value) : value;
   }
   return row;
-}
-
-function describeFilters({ filters, minPrice, maxPrice }) {
-  const parts = Object.entries(filters).map(
-    ([field, values]) => `${FIELD_LABELS[field]}: ${values.join(' oder ')}`
-  );
-  if (minPrice !== undefined) parts.push(`Preis ab ${euro.format(minPrice)}`);
-  if (maxPrice !== undefined) parts.push(`Preis bis ${euro.format(maxPrice)}`);
-  return parts.length > 0 ? parts.join(' | ') : 'keine';
-}
-
-function describeSort({ field, descending }) {
-  return `${FIELD_LABELS[field]} ${descending ? 'absteigend' : 'aufsteigend'}`;
 }
 
 main(process.argv.slice(2), process.env);
